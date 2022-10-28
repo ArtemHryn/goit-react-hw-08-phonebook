@@ -5,6 +5,7 @@
   "homepage": "https://ArtemHryn.github.io/goit-react-hw-04-phonebook/",
   "dependencies": {
     "@emotion/react": "^11.10.4",
+    "@reduxjs/toolkit": "^1.8.6",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
