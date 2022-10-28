@@ -1,19 +1,18 @@
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
-import GlobalStyle from './GlobalStyle';
-import { ContactForm } from './ContactForm/ContactForm';
-import { Contacts } from './Contacts/Contacts';
-import { ContactsFilter } from './ContactsFilter/ContactsFilter';
-import { Title, ContactTitle, Container } from './App.styled';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact, deleteContact } from 'redux/contactsSlice';
+import{changeFilter} from 'redux/filterSlice'
+import GlobalStyle from './GlobalStyle';
+import { ContactForm } from './ContactForm/ContactForm';
+import { ContactsFilter } from './ContactsFilter/ContactsFilter';
+import { Contacts } from './Contacts/Contacts';
+import { Title, ContactTitle, Container } from './App.styled';
 
 export const App = () => {
-  const contacts = useSelector(state => state.contact)
+  const contacts = useSelector(state => state.contact.contacts);
+  const filter = useSelector(state => state.filter.filter)
   const dispatch = useDispatch()
-  console.log(contacts);
-  const [filter, setFilter] = useState('');
 
   const onFormSubmit = ({ name, number }) => {
     const checkContactName = contacts.some(contact => contact.name === name);
@@ -25,7 +24,8 @@ export const App = () => {
     dispatch(addContact(contact))
   };
   const onFilter = e => {
-    setFilter(e.target.value);
+    // setFilter(e.target.value);
+    dispatch(changeFilter(e.target.value));
   };
 
   const onDeleteContact = contactId => {
