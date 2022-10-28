@@ -5,19 +5,15 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { Contacts } from './Contacts/Contacts';
 import { ContactsFilter } from './ContactsFilter/ContactsFilter';
 import { Title, ContactTitle, Container } from './App.styled';
-import { useState, useEffect } from 'react';
-
-const CONTACTS = 'contacts';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact, deleteContact } from 'redux/contactsSlice';
 
 export const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    return JSON.parse(window.localStorage.getItem(CONTACTS)) ?? [];
-  });
+  const contacts = useSelector(state => state.contact)
+  const dispatch = useDispatch()
+  console.log(contacts);
   const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    window.localStorage.setItem(CONTACTS, JSON.stringify(contacts));
-  }, [contacts]);
 
   const onFormSubmit = ({ name, number }) => {
     const checkContactName = contacts.some(contact => contact.name === name);
@@ -26,14 +22,14 @@ export const App = () => {
       return;
     }
     const contact = { id: nanoid(3), name, number };
-    setContacts(state => [contact, ...state]);
+    dispatch(addContact(contact))
   };
   const onFilter = e => {
     setFilter(e.target.value);
   };
 
   const onDeleteContact = contactId => {
-    setContacts(state => state.filter(contact => contact.id !== contactId));
+    dispatch(deleteContact(contactId))
   };
 
   const onVisibleContacts = () => {
