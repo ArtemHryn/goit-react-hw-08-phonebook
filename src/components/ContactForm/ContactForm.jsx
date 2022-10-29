@@ -1,4 +1,8 @@
 import { Formik, ErrorMessage } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { addContact } from 'redux/contactsSlice';
+import Notiflix from 'notiflix';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import {
@@ -28,11 +32,21 @@ const FormError = ({ name }) => {
   );
 };
 
-export const ContactForm = ({onAddTask }) => {
-    const onFormSubmit = (value, { resetForm }) => {
-        onAddTask(value)
-        resetForm()
+export const ContactForm = () => {
+  const contacts = useSelector(state => state.contact.contacts);
+  const dispatch = useDispatch();
+
+  const onFormSubmit = ({ name, number }, { resetForm }) => {
+    const checkContactName = contacts.some(contact => contact.name === name);
+    if (checkContactName) {
+      Notiflix.Report.warning(`${name} is Already in contacts`);
+      return;
     }
+    const contact = { id: nanoid(3), name, number };
+    dispatch(addContact(contact));
+    resetForm();
+  };
+
   return (
     <Formik
       initialValues={initialValues}
