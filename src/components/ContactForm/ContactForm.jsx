@@ -1,7 +1,5 @@
 import { Formik, ErrorMessage } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from 'nanoid';
-import { addContact } from 'redux/contactsSlice';
 import Notiflix from 'notiflix';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
@@ -12,6 +10,9 @@ import {
   Input,
   Button,
 } from './ContactForm.styled';
+import { getContacts } from 'redux/selectors';
+import { addContact} from 'redux/operations';
+
 
 const validationSchema = Yup.object({
   name: Yup.string().required(),
@@ -33,7 +34,7 @@ const FormError = ({ name }) => {
 };
 
 export const ContactForm = () => {
-  const contacts = useSelector(state => state.contact.contacts);
+  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
 
   const onFormSubmit = ({ name, number }, { resetForm }) => {
@@ -42,8 +43,7 @@ export const ContactForm = () => {
       Notiflix.Report.warning(`${name} is Already in contacts`);
       return;
     }
-    const contact = { id: nanoid(3), name, number };
-    dispatch(addContact(contact));
+    dispatch(addContact({ name, phone: number }));
     resetForm();
   };
 

@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
-import { selectVisibleContacts } from 'redux/selectors';
+
+import { getContacts, selectVisibleContacts, getFilter, getIsLoading, getDeleteId } from 'redux/selectors';
+import { deleteContact } from 'redux/operations';
+
 import {
   ContactList,
   ContactItem,
@@ -9,21 +11,22 @@ import {
 } from './Contacts.styled';
 
 export const Contacts = () => {
-  const contacts = useSelector(state => state.contact.contacts);
-  const filter = useSelector(state => state.filter.filter);
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
-
-   const onDeleteContact = contactId => {
-     dispatch(deleteContact(contactId));
-  };
-  
+  const isLoading = useSelector(getIsLoading);
+  const deleteId = useSelector(getDeleteId);
   return (
     <ContactList>
-      {selectVisibleContacts(contacts, filter).map(({ id, name, number }) => (
+      {selectVisibleContacts(contacts, filter).map(({ id, name, phone }) => (
         <ContactItem key={id}>
-          <Contact>{name}</Contact>: <Contact>{number}</Contact>
-          <DeleteButton type="button" onClick={() => onDeleteContact(id)}>
-            Delete
+          <Contact>{name}</Contact>: <Contact>{phone}</Contact>
+          <DeleteButton
+            type="button"
+            onClick={() => dispatch(deleteContact(id))}
+            disabled={isLoading && deleteId === id}
+          >
+            {isLoading && deleteId === id ? 'Deleting' : 'Delete'}
           </DeleteButton>
         </ContactItem>
       ))}
