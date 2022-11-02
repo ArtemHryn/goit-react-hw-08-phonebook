@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getContacts, selectVisibleContacts, getFilter, getIsLoading, getDeleteId } from 'redux/selectors';
+import { getContacts, selectVisibleContacts, getFilter, getIsLoading } from 'redux/selectors';
 import { deleteContact } from 'redux/operations';
 
 import {
@@ -9,13 +9,19 @@ import {
   Contact,
   DeleteButton,
 } from './Contacts.styled';
+import { useState } from 'react';
 
 export const Contacts = () => {
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
   const dispatch = useDispatch();
   const isLoading = useSelector(getIsLoading);
-  const deleteId = useSelector(getDeleteId);
+  const [deleteID, setDeleteId] = useState(null)
+
+  const onDeleteContact = (id) => {
+    setDeleteId(id)
+    dispatch(deleteContact(id));
+  }
   return (
     <ContactList>
       {selectVisibleContacts(contacts, filter).map(({ id, name, phone }) => (
@@ -23,10 +29,10 @@ export const Contacts = () => {
           <Contact>{name}</Contact>: <Contact>{phone}</Contact>
           <DeleteButton
             type="button"
-            onClick={() => dispatch(deleteContact(id))}
-            disabled={isLoading && deleteId === id}
+            onClick={() => onDeleteContact(id)}
+            disabled={isLoading && deleteID === id}
           >
-            {isLoading && deleteId === id ? 'Deleting' : 'Delete'}
+            {isLoading && deleteID === id ? 'Deleting' : 'Delete'}
           </DeleteButton>
         </ContactItem>
       ))}

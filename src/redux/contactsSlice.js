@@ -12,7 +12,7 @@ const onReject = (state, action) => {
 
 const contactSlice = createSlice({
   name: 'contacts',
-  initialState: { contacts: [], isLoading: false, error: null, delete: null },
+  initialState: { contacts: [], isLoading: false, error: null },
   extraReducers: {
     [fetchContacts.pending]: onPending,
     [fetchContacts.fulfilled](state, action) {
@@ -28,10 +28,7 @@ const contactSlice = createSlice({
       state.contacts.push(action.payload);
     },
     [addContact.rejected]: onReject,
-    [deleteContact.pending](state, action) {
-      state.delete = action.meta.arg;
-      onPending(state);
-    },
+    [deleteContact.pending]: onPending,
     [deleteContact.fulfilled](state, action) {
       state.isLoading = false;
       state.error = null;
