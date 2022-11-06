@@ -1,10 +1,11 @@
 import {
-  ContactItem,
-  Contact,
   DeleteButton,
   EditButton,
   Input,
 } from './ContactsList.styled';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+
 import { deleteContact, editContact } from 'redux/operations';
 import { useState } from 'react';
 import { getIsLoading } from 'redux/selectors';
@@ -12,8 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { VscSaveAs } from 'react-icons/vsc';
 
-
-export const ContactsItem = ({ id, name, number }) => {
+export const ContactsItem = ({ id, name, number, idx: index }) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(getIsLoading);
   const [deleteID, setDeleteId] = useState(null);
@@ -46,42 +46,58 @@ export const ContactsItem = ({ id, name, number }) => {
     }
   };
   return (
-    <ContactItem>
-      {isEdit ? (
-        <>
-          <Input type="text" value={editName} name="name" onChange={onChange} />
-          <Input
-            type="text"
-            value={editNumber}
-            name="number"
-            onChange={onChange}
-          />
-        </>
-      ) : (
-        <>
-          <Contact>Name: {name}</Contact> <Contact>Number:{number}</Contact>
-        </>
-      )}
-
-      <DeleteButton
-        type="button"
-        onClick={() => onDeleteContact(id)}
-        disabled={isLoading && deleteID === id}
-      >
-        {isLoading && deleteID === id ? 'Deleting' : 'Delete'}{' '}
-        <AiOutlineDelete />
-      </DeleteButton>
-      <EditButton onClick={() => onEdit({ id, name, number })}>
+    <>
+      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+        <TableCell align="right">{index + 1}</TableCell>
         {isEdit ? (
           <>
-            Save <VscSaveAs />
+            <TableCell align="right">
+              <Input
+                type="text"
+                value={editName}
+                name="name"
+                onChange={onChange}
+              />
+            </TableCell>
+            <TableCell align="right">
+              {' '}
+              <Input
+                type="text"
+                value={editNumber}
+                name="number"
+                onChange={onChange}
+              />
+            </TableCell>
           </>
         ) : (
           <>
-            Edit <AiOutlineEdit />
+            <TableCell align="right">{name}</TableCell>
+            <TableCell align="right">{number}</TableCell>
           </>
         )}
-      </EditButton>
-    </ContactItem>
+
+        <TableCell align="right">
+          <DeleteButton
+            type="button"
+            onClick={() => onDeleteContact(id)}
+            disabled={isLoading && deleteID === id}
+          >
+            {isLoading && deleteID === id ? 'Deleting' : 'Delete'}{' '}
+            <AiOutlineDelete />
+          </DeleteButton>
+          <EditButton onClick={() => onEdit({ id, name, number })}>
+            {isEdit ? (
+              <>
+                Save <VscSaveAs />
+              </>
+            ) : (
+              <>
+                Edit <AiOutlineEdit />
+              </>
+            )}
+          </EditButton>
+        </TableCell>
+      </TableRow>
+    </>
   );
 };
