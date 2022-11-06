@@ -39,3 +39,10 @@ export const EditButton = styled.button`
     background-color: ${p => p.theme.colors.deleteBtn};
   }
 `;
+
+export const Input = styled.input`
+  width: 120px;
+  :first-child{
+    margin-right: 10px;
+  }
+`

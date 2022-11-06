@@ -3,6 +3,7 @@ import {
   Contact,
   DeleteButton,
   EditButton,
+  Input,
 } from './ContactsList.styled';
 import { deleteContact, editContact } from 'redux/operations';
 import { useState } from 'react';
@@ -45,8 +46,8 @@ export const ContactsItem = ({ id, name, number }) => {
     <ContactItem>
       {isEdit ? (
         <>
-          <input type="text" value={editName} name="name" onChange={onChange} />
-          <input
+          <Input type="text" value={editName} name="name" onChange={onChange} />
+          <Input
             type="text"
             value={editNumber}
             name="number"
