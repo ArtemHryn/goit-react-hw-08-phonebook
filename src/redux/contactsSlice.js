@@ -49,7 +49,7 @@ const contactSlice = createSlice({
     const index = state.contacts.findIndex(
       contact => contact.id === action.payload.id
     );
-    state.contacts.splice(index, 1);
+    state.contacts.splice(index, 1, action.payload);
   },
   [editContact.rejected]: onReject,
 });
