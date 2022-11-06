@@ -42,7 +42,8 @@ export const EditButton = styled.button`
 
 export const Input = styled.input`
   width: 120px;
-  :first-child{
+  border-radius: ${p => p.theme.radii.normal};
+  :first-child {
     margin-right: 10px;
   }
-`
+`;

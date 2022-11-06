@@ -9,6 +9,9 @@ import { deleteContact, editContact } from 'redux/operations';
 import { useState } from 'react';
 import { getIsLoading } from 'redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import { VscSaveAs } from 'react-icons/vsc';
+
 
 export const ContactsItem = ({ id, name, number }) => {
   const dispatch = useDispatch();
@@ -56,7 +59,7 @@ export const ContactsItem = ({ id, name, number }) => {
         </>
       ) : (
         <>
-          <Contact>{name}</Contact>: <Contact>{number}</Contact>
+          <Contact>Name: {name}</Contact> <Contact>Number:{number}</Contact>
         </>
       )}
 
@@ -65,10 +68,19 @@ export const ContactsItem = ({ id, name, number }) => {
         onClick={() => onDeleteContact(id)}
         disabled={isLoading && deleteID === id}
       >
-        {isLoading && deleteID === id ? 'Deleting' : 'Delete'}
+        {isLoading && deleteID === id ? 'Deleting' : 'Delete'}{' '}
+        <AiOutlineDelete />
       </DeleteButton>
       <EditButton onClick={() => onEdit({ id, name, number })}>
-        {isEdit ? 'Save' : 'Edit'}
+        {isEdit ? (
+          <>
+            Save <VscSaveAs />
+          </>
+        ) : (
+          <>
+            Edit <AiOutlineEdit />
+          </>
+        )}
       </EditButton>
     </ContactItem>
   );
