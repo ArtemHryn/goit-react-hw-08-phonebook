@@ -7,6 +7,7 @@ const initialState = {
   user: { name: null, email: null },
   token: null,
   isLoggedIn: false,
+  isRefreshing: false,
 };
 
 const persistConfig = {
@@ -34,10 +35,17 @@ const authSlice = createSlice({
       state.token = null;
       state.isLoggedIn = false;
     },
+    [fetchUser.pending](state) {
+      state.isRefreshing = true;
+    },
     [fetchUser.fulfilled](state, action) {
-      state.user = action.payload
-      state.isLoggedIn = true
-    }
+      state.user = action.payload;
+      state.isLoggedIn = true;
+      state.isRefreshing = false;
+    },
+    [fetchUser.rejected](state) {
+      state.isRefreshing = false;
+    },
   },
 });
 

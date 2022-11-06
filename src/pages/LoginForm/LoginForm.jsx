@@ -1,58 +1,59 @@
 import { Box } from 'components/Box';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { logIn } from 'redux/auth-operations';
-import { Form, Input, StyledButton, DecorInput } from './LoginForm.styled';
-
+import {
+  Form,
+  Input,
+  StyledButton,
+  DecorInput,
+  LoginTitle,
+  Error,
+} from './LoginForm.styled';
 
 export const LoginForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const onChange = e => {
-    switch (e.target.name) {
-      case 'email':
-        return setEmail(e.target.value);
-      case 'password':
-        return setPassword(e.target.value);
-      default:
-        break;
-    }
-  };
-  const onSubmit = e => {
-    e.preventDefault();
-    dispatch(logIn({ email, password }));
-    setEmail('');
-    setPassword('');
-  };
+
   return (
     <Box pt={6}>
-      <Form onSubmit={onSubmit}>
+      <Form
+        onSubmit={handleSubmit(data => {
+          dispatch(logIn(data));
+        })}
+      >
+        <LoginTitle>Log In</LoginTitle>
+
         <DecorInput>
           <Input
             label="Email"
             variant="outlined"
-            name="email"
+            {...register('email', {
+              required: 'Please, enter Email',
+            })}
             type="email"
-            value={email}
-            onChange={onChange}
-            required
           />
+          {errors.email?.message && <Error>{errors.email.message}</Error>}
         </DecorInput>
         <DecorInput>
           <Input
             label="Password"
             variant="outlined"
-            name="password"
+            {...register('password', {
+              required: 'Please, enter Password',
+              minLength: { value: 7, message: 'Min Length 7' },
+            })}
             type="password"
-            onChange={onChange}
-            value={password}
-            required
           />
+          {errors.password?.message && <Error>{errors.password.message}</Error>}
         </DecorInput>
 
         <StyledButton type="submit" variant="outlined">
-          Registration
+          Log In
         </StyledButton>
       </Form>
     </Box>

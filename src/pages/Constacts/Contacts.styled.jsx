@@ -9,4 +9,4 @@ export const ContactTitle = styled.h2`
 `;
 export const Container = styled.div`
   padding: ${p => p.theme.space[5]}px;
-`
+`;

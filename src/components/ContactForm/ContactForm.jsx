@@ -43,7 +43,7 @@ export const ContactForm = () => {
       Notiflix.Report.warning(`${name} is Already in contacts`);
       return;
     }
-    dispatch(addContact({ name, phone: number }));
+    dispatch(addContact({ name, number }));
     resetForm();
   };
 

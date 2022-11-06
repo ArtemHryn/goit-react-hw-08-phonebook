@@ -1,5 +1,5 @@
 import { Box } from 'components/Box';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { register } from 'redux/auth-operations';
 import {
@@ -8,68 +8,54 @@ import {
   StyledButton,
   DecorInput,
   RegistrationHeader,
+  Error,
 } from './Registration.styled';
 
 export const Registration = () => {
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const onChange = e => {
-    switch (e.target.name) {
-      case 'name':
-        return setName(e.target.value);
-      case 'email':
-        return setEmail(e.target.value);
-      case 'password':
-        return setPassword(e.target.value);
-      default:
-        break;
-    }
-  };
-  const onSubmit = e => {
-    e.preventDefault();
-    dispatch(register({ name, email, password }));
-    setName('');
-    setEmail('');
-    setPassword('');
-  };
+  const {
+    register: registerForm,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   return (
     <Box pt={6}>
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={handleSubmit(data => dispatch(register(data)))}>
         <RegistrationHeader>Registration</RegistrationHeader>
         <DecorInput>
           <Input
             label="Name"
             variant="outlined"
-            name="name"
             type="text"
-            value={name}
-            onChange={onChange}
-            required
+            {...registerForm('name', {
+              required: 'Please, enter your name',
+            })}
           />
+          <Error>{errors.name?.message}</Error>
         </DecorInput>
         <DecorInput>
           <Input
             label="Email"
             variant="outlined"
-            name="email"
+            {...registerForm('email', {
+              required: 'Please, enter your email',
+            })}
             type="email"
-            value={email}
-            onChange={onChange}
-            required
           />
+          <Error>{errors.email?.message}</Error>
         </DecorInput>
         <DecorInput>
           <Input
             label="Password"
             variant="outlined"
-            name="password"
+            {...registerForm('password', {
+              required: 'Please, enter your password',
+              minLength: { value: 7, message: 'Min Length 7' },
+            })}
             type="password"
-            onChange={onChange}
-            value={password}
-            required
           />
+          <Error>{errors.password?.message}</Error>
         </DecorInput>
 
         <StyledButton type="submit" variant="outlined">

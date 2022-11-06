@@ -10,13 +10,11 @@ export const AppBar = () => {
     <Box
       as="header"
       display="flex"
-      justifyContent="space-between"
       borderBottom="normal"
       p={4}
     >
-      <h1>Welcome to PhoneBook</h1>
       {isLoggedIn ? (
-        <Box as='nav'>
+        <Box as='nav' width='100%'>
           <UserMenu />
         </Box>
       ) : (
