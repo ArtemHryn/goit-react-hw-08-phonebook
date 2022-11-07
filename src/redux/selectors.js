@@ -7,6 +7,7 @@ export const getIsLogin = state => state.auth.isLoggedIn;
 export const getEmail = state => state.auth.user.email;
 export const getName = state => state.auth.user.name;
 export const getRefreshing = state => state.auth.isRefreshing;
+export const getAuthError = state => state.auth.error;
 
 
 

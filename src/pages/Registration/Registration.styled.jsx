@@ -29,3 +29,8 @@ export const Error = styled.p`
   color: red;
   font-style: italic;
 `;
+export const AuthError = styled.p`
+  color: red;
+  font-style: italic;
+  margin-bottom: 8px;
+`;

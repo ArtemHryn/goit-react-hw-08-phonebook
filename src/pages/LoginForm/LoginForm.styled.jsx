@@ -30,3 +30,9 @@ margin-top: 8px;
 color: red;
 font-style: italic;
 `
+
+export const AuthError = styled.p`
+  color: red;
+  font-style: italic;
+  margin-bottom: 8px;
+`;

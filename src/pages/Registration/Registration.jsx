@@ -1,7 +1,8 @@
 import { Box } from 'components/Box';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { register } from 'redux/auth-operations';
+import { getAuthError } from 'redux/selectors';
 import {
   Form,
   Input,
@@ -9,6 +10,7 @@ import {
   DecorInput,
   RegistrationHeader,
   Error,
+  AuthError,
 } from './Registration.styled';
 
 export const Registration = () => {
@@ -18,9 +20,10 @@ export const Registration = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const error = useSelector(getAuthError);
   return (
     <Box pt={6}>
+      {error && <AuthError>{error}</AuthError>}
       <Form onSubmit={handleSubmit(data => dispatch(register(data)))}>
         <RegistrationHeader>Registration</RegistrationHeader>
         <DecorInput>

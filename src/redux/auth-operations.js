@@ -12,22 +12,28 @@ const token = {
   },
 };
 
-export const register = createAsyncThunk('auth/register', async credentials => {
-  try {
-    const response = await axios.post('/users/signup', credentials);
-    token.set(response.data.token);
-    return response.data;
-  } catch (error) {
-    console.log(error);
+export const register = createAsyncThunk(
+  'auth/register',
+  async (credentials, thunkAPI) => {
+    try {
+      const response = await axios.post('/users/signup', credentials);
+      token.set(response.data.token);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue('User is already exist');
+    }
   }
-});
+);
 
-export const logIn = createAsyncThunk('auth/login', async credentials => {
+export const logIn = createAsyncThunk('auth/login', async (credentials, thunkAPI) => {
   try {
     const response = await axios.post('/users/login', credentials);
     token.set(response.data.token);
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+    return thunkAPI.rejectWithValue('Incorrect login or password');
+  }
 });
 
 export const logOut = createAsyncThunk('auth/logout', async () => {
@@ -47,7 +53,13 @@ export const fetchUser = createAsyncThunk(
     token.set(currentToken);
     try {
       const { data } = await axios.get('/users/current');
-      return data
-    } catch (error) {}
+      return data;
+    } catch (error) {
+      token.unset();
+      if (error.response.status === 401) {
+        return thunkAPI.rejectWithValue(error.response.data.message);
+      }
+      return thunkAPI.rejectWithValue('something went wrong, please, try again');
+    }
   }
 );

@@ -1,7 +1,8 @@
 import { Box } from 'components/Box';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logIn } from 'redux/auth-operations';
+import { getAuthError } from 'redux/selectors';
 import {
   Form,
   Input,
@@ -9,6 +10,7 @@ import {
   DecorInput,
   LoginTitle,
   Error,
+  AuthError,
 } from './LoginForm.styled';
 
 export const LoginForm = () => {
@@ -18,9 +20,11 @@ export const LoginForm = () => {
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch();
+  const error = useSelector(getAuthError);
 
   return (
     <Box pt={6}>
+      {error && <AuthError>{error}</AuthError>}
       <Form
         onSubmit={handleSubmit(data => {
           dispatch(logIn(data));
