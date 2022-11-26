@@ -1,7 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { register, logIn, logOut, fetchUser } from './auth-operations';
+
+const extraActions = [register, logIn, fetchUser];
+const getActions = type => extraActions.map(action => action[type]);
+
+const logOutSuccessfully = state => {
+  state.user = { name: null, email: null };
+  state.token = null;
+  state.isLoggedIn = false;
+};
+const fetchUseSuccessfully = (state, action) => {
+  state.user = action.payload;
+  state.isRefreshing = false;
+};
+
+const fetchUserPending = state => {
+  state.isRefreshing = true;
+};
+const fetchUserRejected = state => {
+  state.isRefreshing = false;
+};
 
 const initialState = {
   user: { name: null, email: null },
@@ -20,44 +40,26 @@ const persistConfig = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  extraReducers: {
-    [register.fulfilled](state, action) {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.isLoggedIn = true;
-      state.error = null;
-    },
-    [register.rejected](state, action) {
-      state.error = action.payload
-    },
-    [logIn.fulfilled](state, action) {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.isLoggedIn = true;
-      state.error = null
-    },
-    [logIn.rejected](state, action) {
-      state.error = action.payload
-    },
-    [logOut.fulfilled](state) {
-      state.user = { name: null, email: null };
-      state.token = null;
-      state.isLoggedIn = false;
-    },
-    [fetchUser.pending](state) {
-      state.isRefreshing = true;
-    },
-    [fetchUser.fulfilled](state, action) {
-      state.user = action.payload;
-      state.isLoggedIn = true;
-      state.isRefreshing = false;
-      state.error = null
-    },
-    [fetchUser.rejected](state, action) {
-      state.isRefreshing = false;
-      state.error = action.payload
-    },
-  },
+  extraReducers: builder =>
+    builder
+      .addCase(logOut.fulfilled, logOutSuccessfully)
+      .addCase(fetchUser.pending, fetchUserPending)
+      .addCase(fetchUser.fulfilled, fetchUseSuccessfully)
+      .addCase(fetchUser.rejected, fetchUserRejected)
+      .addMatcher(isAnyOf(...getActions('rejected')), (state, action) => {
+        state.error = action.payload;
+      })
+      .addMatcher(isAnyOf(...getActions('fulfilled')), state => {
+        state.isLoggedIn = true;
+        state.error = null;
+      })
+      .addMatcher(
+        isAnyOf(register.fulfilled, logIn.fulfilled),
+        (state, action) => {
+          state.user = action.payload.user;
+          state.token = action.payload.token;
+        }
+      ),
 });
 
 export const authReducer = persistReducer(persistConfig, authSlice.reducer);
