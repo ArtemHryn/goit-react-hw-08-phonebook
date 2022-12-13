@@ -22,12 +22,13 @@ export const LoginForm = () => {
   const dispatch = useDispatch();
   const error = useSelector(getAuthError);
 
+
   return (
     <Box pt={6}>
       {error && <AuthError>{error}</AuthError>}
       <Form
         onSubmit={handleSubmit(data => {
-          dispatch(logIn(data));
+          dispatch(logIn(data))
         })}
       >
         <LoginTitle>Log In</LoginTitle>
